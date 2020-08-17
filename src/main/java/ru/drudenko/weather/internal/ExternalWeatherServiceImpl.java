@@ -33,7 +33,7 @@ public class ExternalWeatherServiceImpl implements ExternalWeatherService {
 
     @Cacheable("weather")
     @Override
-    public Weather getWeatherByGeoCoordinates(double lon, double lat)  {
+    public Weather getWeatherByGeoCoordinates(double lon, double lat) {
         log.info("Request openweathermap: lon: {}, lat: {}", lon, lat);
         ResponseEntity<Result> result = openWeatherMapClient.getResult(lon, lat);
         log.info("Response openweathermap: {}", result);

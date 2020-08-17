@@ -7,23 +7,29 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableGlobalAuthentication
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
+
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth, PasswordEncoder passwordEncoder) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("user1").password("1111").roles("USER")
+                .withUser("user1").password(passwordEncoder.encode("1111")).roles("USER")
                 .and()
-                .withUser("user2").password("2222").roles("USER")
+                .withUser("user2").password(passwordEncoder.encode("2222")).roles("USER")
                 .and()
-                .withUser("user3").password("3333").roles("USER")
+                .withUser("user3").password(passwordEncoder.encode("3333")).roles("USER")
                 .and()
-                .withUser("user4").password("4444").roles("USER")
+                .withUser("user4").password(passwordEncoder.encode("4444")).roles("USER")
                 .and()
-                .withUser("admin").password("password").roles("USER", "ADMIN");
+                .withUser("admin").password(passwordEncoder.encode("password")).roles("USER", "ADMIN");
     }
 
     @Override
@@ -33,10 +39,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/weather/**").authenticated()
                 .and()
                 .httpBasic();
-    }
-
-    @Bean
-    public static NoOpPasswordEncoder passwordEncoder() {
-        return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 }

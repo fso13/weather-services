@@ -3,7 +3,7 @@ package ru.drudenko.weather.configuration;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -12,14 +12,13 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class OpenWeatherMapConfiguration {
-    @Value("${connect_timeout:1000}")
-    private Integer connectTimeout;
-    @Value("${connect_request_timeout:1000}")
-    private Integer connectResetTimeout;
-    @Value("${max_pool_size:20}")
-    private Integer maxTotal;
-    @Value("${max_per_route_size:10}")
-    private Integer defaultMaxPerRoute;
+
+    private final OpenWeatherMapProperties properties;
+
+    @Autowired
+    public OpenWeatherMapConfiguration(OpenWeatherMapProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
     public RestTemplate restTemplate() {
@@ -29,15 +28,15 @@ public class OpenWeatherMapConfiguration {
     private HttpComponentsClientHttpRequestFactory requestFactory() {
         HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
         httpRequestFactory.setHttpClient(httpClient());
-        httpRequestFactory.setConnectTimeout(connectTimeout);
-        httpRequestFactory.setConnectionRequestTimeout(connectResetTimeout);
+        httpRequestFactory.setConnectTimeout(properties.getConnectTimeout());
+        httpRequestFactory.setConnectionRequestTimeout(properties.getConnectResetTimeout());
         return httpRequestFactory;
     }
 
     private HttpClient httpClient() {
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
-        connManager.setMaxTotal(maxTotal);
-        connManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
+        connManager.setMaxTotal(properties.getMaxTotal());
+        connManager.setDefaultMaxPerRoute(properties.getDefaultMaxPerRoute());
         return HttpClientBuilder.create()
                 .setConnectionManager(connManager)
                 .build();

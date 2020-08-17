@@ -2,49 +2,41 @@ package ru.drudenko.weather.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
 import ru.drudenko.weather.domain.Weather;
+import ru.drudenko.weather.internal.openweathermap.OpenWeatherMapClient;
+import ru.drudenko.weather.internal.openweathermap.dto.Result;
+import ru.drudenko.weather.mapper.WeatherMapper;
 import ru.drudenko.weather.services.ExternalWeatherService;
 
-@Component("externalWeatherService")
+@Service
 public class ExternalWeatherServiceImpl implements ExternalWeatherService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    private static final String APPID = "b750eceec95423961c453569fe5f1726";
-    private static final String HTTP_API_OPENWEATHERMAP_ORG_DATA_2_5_FORECAST = "http://api.openweathermap.org/data/2.5/forecast";
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final OpenWeatherMapClient openWeatherMapClient;
 
+    @Autowired
+    public ExternalWeatherServiceImpl(OpenWeatherMapClient openWeatherMapClient) {
+        this.openWeatherMapClient = openWeatherMapClient;
+    }
+
+    @Cacheable("weather")
     @Override
-    public Weather getWeatherByCity(String city) throws HttpClientErrorException {
-        ResponseEntity<Result> result = restTemplate.getForEntity(HTTP_API_OPENWEATHERMAP_ORG_DATA_2_5_FORECAST + "?q={city}&APPID={APPID}", Result.class, city, APPID);
+    public Weather getWeatherByCity(String city) {
+        log.info("Request openweathermap: city: {}", city);
+        ResponseEntity<Result> result = openWeatherMapClient.getResult(city);
         log.info("Response openweathermap: {}", result);
-        return convertResult(result);
+        return WeatherMapper.convertResult(result);
     }
 
+    @Cacheable("weather")
     @Override
-    public Weather getWeatherByGeoCoordinates(double lon, double lat) throws HttpClientErrorException {
-        ResponseEntity<Result> result = restTemplate.getForEntity(HTTP_API_OPENWEATHERMAP_ORG_DATA_2_5_FORECAST + "?lon={lon}&lat={lat}&APPID={APPID}", Result.class, lon, lat, APPID);
-        return convertResult(result);
-    }
-
-    private Weather convertResult(ResponseEntity<Result> entity) {
-        if (entity.getStatusCode().equals(HttpStatus.OK)) {
-            Result result = entity.getBody();
-            if (result == null || result.getList().isEmpty()) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-            }
-
-            String city = result.getCity() == null ? "" : result.getCity().getName();
-            List list = result.getList().get(0);
-            return new Weather(city,
-                    list.getMain().getTemp(),
-                    list.getWind().getSpeed(),
-                    list.getWind().getDeg());
-        } else {
-            throw new HttpClientErrorException(entity.getStatusCode(), entity.toString());
-        }
+    public Weather getWeatherByGeoCoordinates(double lon, double lat)  {
+        log.info("Request openweathermap: lon: {}, lat: {}", lon, lat);
+        ResponseEntity<Result> result = openWeatherMapClient.getResult(lon, lat);
+        log.info("Response openweathermap: {}", result);
+        return WeatherMapper.convertResult(result);
     }
 }

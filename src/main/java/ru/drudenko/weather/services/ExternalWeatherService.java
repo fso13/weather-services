@@ -5,7 +5,7 @@ import ru.drudenko.weather.domain.Weather;
 
 public interface ExternalWeatherService {
 
-    Weather getWeatherByCity(String city) throws HttpClientErrorException;
+    Weather getWeatherByCity(String city) throws HttpClientErrorException, InterruptedException;
 
-    Weather getWeatherByGeoCoordinates(double lon, double lat) throws HttpClientErrorException;
+    Weather getWeatherByGeoCoordinates(double lon, double lat) throws HttpClientErrorException, InterruptedException;
 }

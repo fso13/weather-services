@@ -1,4 +1,4 @@
-package ru.drudenko.weather.internal;
+package ru.drudenko.weather.internal.openweathermap.dto;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

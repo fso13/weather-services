@@ -19,7 +19,7 @@ admin(password)
 В запросах используется Basic Auth.
 
 Получение погоды по названию города:
-GET localhost:8092/weather?city=Москва
+GET localhost:8191/weather?city=Москва
 
 Пример ответа:
 ```
@@ -30,7 +30,7 @@ GET localhost:8092/weather?city=Москва
 }
 ```
 Получение погоды по координатам:
-localhost:8092/weather?lon=45&lat=67
+localhost:8191/weather?lon=45&lat=67
 
 Пример ответа:
 ```

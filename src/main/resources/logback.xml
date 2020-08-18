@@ -4,22 +4,27 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${catalina.base}/logs/roox-webapi.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-              <maxFileSize>200MB</maxFileSize>
+                <maxFileSize>200MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <maxHistory>100</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}] [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}', '*************'}%n
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}]
+                [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}',
+                '*************'}%n
             </pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}] [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}', '*************'}%n</pattern>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}]
+                [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}',
+                '*************'}%n
+            </pattern>
         </encoder>
     </appender>
-	
+
     <appender name="APACHE_HTTP_CLEINT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${catalina.base}/logs/apache-httpclient.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -32,7 +37,9 @@
             <maxFileSize>200MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
-            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}] [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}] %replace(%msg){'password.*', 'password****'}%n
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}]
+                [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}]
+                %replace(%msg){'password.*', 'password****'}%n
             </pattern>
         </encoder>
     </appender>
@@ -48,7 +55,9 @@
             <maxFileSize>200MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
-            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}] [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}] %replace(%msg){'password.*', 'password****'}%n
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}]
+                [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}]
+                %replace(%msg){'password.*', 'password****'}%n
             </pattern>
         </encoder>
     </appender>

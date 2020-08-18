@@ -15,8 +15,12 @@ import ru.drudenko.weather.controllers.WeatherExceptionHandler;
 @EnableGlobalAuthentication
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final WeatherExceptionHandler handler;
+
     @Autowired
-    private WeatherExceptionHandler handler;
+    public SecurityConfig(WeatherExceptionHandler handler) {
+        this.handler = handler;
+    }
 
     @Bean
     public static PasswordEncoder passwordEncoder() {

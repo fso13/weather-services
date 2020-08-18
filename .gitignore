@@ -63,3 +63,4 @@ crashlytics-build.properties
 
 /datanucleus.log
 /liquibase.properties
+/catalina.base_IS_UNDEFINED/

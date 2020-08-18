@@ -1,0 +1,109 @@
+<configuration>
+    <appender name="WEBAPI_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/webapi.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/roox-webapi.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+              <maxFileSize>200MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}] [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}', '*************'}%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] [cid=%X{context-id}] [ctype=%X{client-type}] [personId=%X{person-id}] [host=%X{host-name}] %logger{10} %replace(%msg){'eyAi.{2000}', '*************'}%n</pattern>
+        </encoder>
+    </appender>
+	
+    <appender name="APACHE_HTTP_CLEINT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/apache-httpclient.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/apache-httpclient.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>20</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>200MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}] [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}] %replace(%msg){'password.*', 'password****'}%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CATALINA_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.base}/logs/catalina.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/catalina.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>20</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>200MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%date{YYYY-MM-dd HH:mm:ss.SSS} %level [%thread] %logger{10} [%file] [app=%X{context-name}] [host=%X{host-name}] [cid=%X{context-id}] [sys=%X{system-id}] [prn=%X{user-id}] %replace(%msg){'password.*', 'password****'}%n
+            </pattern>
+        </encoder>
+    </appender>
+
+
+    <appender name="ASYNC_WEBAPI_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="WEBAPI_FILE"/>
+    </appender>
+
+    <appender name="ASYNC_APACHE_HTTP_CLEINT_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="APACHE_HTTP_CLEINT_FILE"/>
+    </appender>
+
+    <logger name="org.apache.coyote" level="INFO" additivity="false">
+        <appender-ref ref="CATALINA_FILE"/>
+    </logger>
+
+    <logger name="org.apache.catalina" level="INFO" additivity="false">
+        <appender-ref ref="CATALINA_FILE"/>
+    </logger>
+
+    <logger name="org.apache.tomcat" level="INFO" additivity="false">
+        <appender-ref ref="CATALINA_FILE"/>
+    </logger>
+
+    <logger name="org.apache.http" level="info" additivity="false">
+        <appender-ref ref="ASYNC_APACHE_HTTP_CLEINT_FILE"/>
+    </logger>
+
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.springframework.security" level="info" additivity="false">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.apache.commons.beanutils.converters" level="info" additivity="false">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="ru.drudenko.weather" level="info" additivity="false">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.zaxxer.hikari" level="debug" additivity="false">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <root level="info">
+        <appender-ref ref="ASYNC_WEBAPI_FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

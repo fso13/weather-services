@@ -1,7 +1,9 @@
 package ru.drudenko.weather.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 @Getter
 public class Weather {
     private final String city;

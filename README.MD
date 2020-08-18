@@ -1,16 +1,16 @@
-1.  Собрать проект
+### 1.  Собрать проект
 
 ```
 mvn clean install
 ```
 
-2.  Запустить
+### 2.  Запустить
 
 ```
 java -jar target\weather-services-1.0.0-SNAPSHOT.jar
 ```
 
-3.  Иницилизация
+### 3.  Иницилизация
 
 Существует 5 юзеров:   
      
@@ -20,7 +20,7 @@ java -jar target\weather-services-1.0.0-SNAPSHOT.jar
 *   user4(4444)
 *   admin(password)
 
-4.  Примеры запросов
+### 4.  Примеры запросов
 
 В запросах используется Basic Auth.
 

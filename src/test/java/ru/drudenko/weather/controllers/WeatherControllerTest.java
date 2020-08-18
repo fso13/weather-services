@@ -1,6 +1,7 @@
 package ru.drudenko.weather.controllers;
 
 import io.restassured.RestAssured;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +25,6 @@ import ru.drudenko.weather.internal.openweathermap.dto.Wind;
 import java.util.ArrayList;
 import java.util.Base64;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.when;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WeatherControllerTest {
@@ -39,7 +35,7 @@ public class WeatherControllerTest {
     public static final String NO_VALID_CREDENTIALS_HEADER = "Basic " + Base64.getEncoder().encodeToString("user1:fail".getBytes());
 
     @LocalServerPort
-    int port;
+    private int port;
     @Autowired
     private WebApplicationContext context;
     @Autowired
@@ -59,50 +55,50 @@ public class WeatherControllerTest {
     }
 
     @Test
-    public void getWeatherByCity_200() {
-        when(openWeatherMapClient.getResult(CITY)).thenReturn(ResponseEntity.ok(getStubResult()));
+    public void getWeatherByCityOk() {
+        Mockito.when(openWeatherMapClient.getResult(CITY)).thenReturn(ResponseEntity.ok(getStubResult()));
 
-        given().header("authorization", VALID_CREDENTIALS_HEADER)
+        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
                 .get(ENDPOINT_WEATHER_CITY, CITY)
                 .then().assertThat()
                 .statusCode(200)
-                .body("city", equalTo(CITY))
-                .body("temperature", notNullValue())
-                .body("wind", notNullValue());
+                .body("city", Matchers.equalTo(CITY))
+                .body("temperature", Matchers.notNullValue())
+                .body("wind", Matchers.notNullValue());
     }
 
     @Test
-    public void getWeatherByCity_BadRequest() {
+    public void getWeatherByCityBadRequest() {
 
-        given().header("authorization", VALID_CREDENTIALS_HEADER)
+        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
                 .get(ENDPOINT_WEATHER_CITY, "")
                 .then().assertThat()
                 .statusCode(400)
-                .body("code", equalTo(400))
-                .body("message", equalTo("City is mandatory!"));
+                .body("code", Matchers.equalTo(400))
+                .body("message",Matchers.equalTo("City is mandatory!"));
     }
 
     @Test
-    public void getWeatherByCoordinates_200() {
-        when(openWeatherMapClient.getResult(20.0, 30.0)).thenReturn(ResponseEntity.ok(getStubResult()));
+    public void getWeatherByCoordinatesOk() {
+        Mockito.when(openWeatherMapClient.getResult(20.0, 30.0)).thenReturn(ResponseEntity.ok(getStubResult()));
 
-        given().header("authorization", VALID_CREDENTIALS_HEADER)
+        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
                 .get(ENDPOINT_WEATHER_LON_LAT, 20.0, 30.0)
                 .then().assertThat()
                 .statusCode(200)
-                .body("city", equalTo(CITY))
-                .body("temperature", notNullValue())
-                .body("wind", notNullValue());
+                .body("city", Matchers.equalTo(CITY))
+                .body("temperature", Matchers.notNullValue())
+                .body("wind", Matchers.notNullValue());
     }
 
     @Test
-    public void getWeather_401() {
-        given().header("authorization", NO_VALID_CREDENTIALS_HEADER)
+    public void getWeatherBadCredentials() {
+        RestAssured.given().header("authorization", NO_VALID_CREDENTIALS_HEADER)
                 .get(ENDPOINT_WEATHER_LON_LAT, 20.0, 30.0)
                 .then().assertThat()
                 .statusCode(401)
-                .body("code", equalTo(401))
-                .body("message", equalTo("Bad credentials"));
+                .body("code", Matchers.equalTo(401))
+                .body("message", Matchers.equalTo("Bad credentials"));
     }
 
     private Result getStubResult() {

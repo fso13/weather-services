@@ -1,5 +1,11 @@
 package ru.drudenko.weather.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +20,7 @@ import ru.drudenko.weather.services.ExternalWeatherService;
 
 import java.security.Principal;
 
+@Tag(name = "Weather controller")
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
@@ -25,6 +32,15 @@ public class WeatherController {
         this.externalWeatherService = externalWeatherService;
     }
 
+    @Operation(summary = "Get a weather by its name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the weather",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Weather.class))}),
+            @ApiResponse(responseCode = "400", description = "City is mandatory!",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Bad credentials",
+                    content = @Content)})
     @RequestMapping(method = RequestMethod.GET, params = {"city"})
     @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('USER')")
     public Weather weather(@RequestParam(value = "city") String city,
@@ -41,6 +57,15 @@ public class WeatherController {
         }
     }
 
+    @Operation(summary = "Get a weather by its lon and lat")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the weather",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Weather.class))}),
+            @ApiResponse(responseCode = "400", description = "City is mandatory!",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Bad credentials",
+                    content = @Content)})
     @RequestMapping(method = RequestMethod.GET, params = {"lon", "lat"})
     @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('USER')")
     public Weather weather(@RequestParam(value = "lon") double lon,

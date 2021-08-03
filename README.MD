@@ -1,3 +1,6 @@
+
+[![Java CI with Maven](https://github.com/fso13/weather-services/actions/workflows/maven.yml/badge.svg)](https://github.com/fso13/weather-services/actions/workflows/maven.yml) [![CodeQL](https://github.com/fso13/weather-services/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/fso13/weather-services/actions/workflows/codeql-analysis.yml)
+
 ### 1.  Собрать проект
 
 ```

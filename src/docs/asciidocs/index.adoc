@@ -1,0 +1,48 @@
+= REST API
+LaughtingMan;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+
+[[overview-get-weather-by-city]]
+==  Get weather by city name
+==== Sample Request
+include::{snippets}/get-weather-by-city-ok/http-request.adoc[]
+
+==== Sample Response
+include::{snippets}/get-weather-by-city-ok/http-response.adoc[]
+
+==== CURL sample
+include::{snippets}/get-weather-by-city-ok/curl-request.adoc[]
+
+==== Response Fields
+include::{snippets}/get-weather-by-city-ok/response-fields.adoc[]
+
+==== Error
+include::{snippets}/get-weather-by-city-bad-request/http-response.adoc[]
+include::{snippets}/get-weather-by-city-bad-credentials/http-response.adoc[]
+
+include::{snippets}/get-weather-by-city-bad-request/response-fields.adoc[]
+
+[[overview-get-weather-by-coordinates]]
+==  Get weather by coordinates
+==== Sample Request
+include::{snippets}/get-weather-by-coordinates-ok/http-request.adoc[]
+
+==== Sample Response
+include::{snippets}/get-weather-by-coordinates-ok/http-response.adoc[]
+
+==== CURL sample
+include::{snippets}/get-weather-by-coordinates-ok/curl-request.adoc[]
+
+==== Response Fields
+include::{snippets}/get-weather-by-coordinates-ok/response-fields.adoc[]
+
+==== Error
+include::{snippets}/get-weather-by-coordinates-bad-credentials/http-response.adoc[]
+
+include::{snippets}/get-weather-by-coordinates-bad-credentials/response-fields.adoc[]

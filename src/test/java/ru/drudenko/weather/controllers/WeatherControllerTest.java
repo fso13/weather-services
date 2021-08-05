@@ -1,21 +1,26 @@
 package ru.drudenko.weather.controllers;
 
-import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.restdocs.ManualRestDocumentation;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.drudenko.weather.internal.ExternalWeatherServiceImpl;
-import ru.drudenko.weather.internal.openweathermap.OpenWeatherMapClient;
+import ru.drudenko.weather.TestConfig;
 import ru.drudenko.weather.internal.openweathermap.dto.City;
 import ru.drudenko.weather.internal.openweathermap.dto.List;
 import ru.drudenko.weather.internal.openweathermap.dto.Main;
@@ -26,79 +31,134 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@WebMvcTest(WeatherController.class)
+@Import({TestConfig.class})
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "ru.drudenko.weather", uriPort = 80)
 public class WeatherControllerTest {
     public static final String CITY = "Москва";
-    public static final String ENDPOINT_WEATHER_CITY = "/weather?city={1}";
-    public static final String ENDPOINT_WEATHER_LON_LAT = "/weather?lon={1}&lat={2}";
+    public static final String ENDPOINT_WEATHER_CITY = "/weather?city={name}";
+    public static final String ENDPOINT_WEATHER_LON_LAT = "/weather?lon={lon}&lat={lat}";
     public static final String VALID_CREDENTIALS_HEADER = "Basic " + Base64.getEncoder().encodeToString("user1:1111".getBytes());
     public static final String NO_VALID_CREDENTIALS_HEADER = "Basic " + Base64.getEncoder().encodeToString("user1:fail".getBytes());
-
-    @LocalServerPort
-    private int port;
+    private final ManualRestDocumentation restDocumentation = new ManualRestDocumentation();
     @Autowired
     private WebApplicationContext context;
     @Autowired
-    private OpenWeatherMapClient openWeatherMapClient;
-    @Autowired
-    private ExternalWeatherServiceImpl externalWeatherService;
+    private MockMvc mockMvc;
 
-    @Before
-    public void setUp() {
-        RestAssured.port = port;
-        RestAssured.basePath = "/";
-
-        openWeatherMapClient = (OpenWeatherMapClient) context.getBean("openWeatherMapClient");
-        openWeatherMapClient = Mockito.mock(OpenWeatherMapClient.class);
-        ReflectionTestUtils.setField(externalWeatherService, "openWeatherMapClient", openWeatherMapClient);
-        MockitoAnnotations.initMocks(this);
+    @BeforeEach
+    public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
+                .alwaysDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint())))
+                .build();
     }
 
     @Test
-    public void getWeatherByCityOk() {
-        Mockito.when(openWeatherMapClient.getResult(CITY)).thenReturn(ResponseEntity.ok(getStubResult()));
+    public void getWeatherByCityOk() throws Exception {
 
-        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
-                .get(ENDPOINT_WEATHER_CITY, CITY)
-                .then().assertThat()
-                .statusCode(200)
-                .body("city", Matchers.equalTo(CITY))
-                .body("temperature", Matchers.notNullValue())
-                .body("wind", Matchers.notNullValue());
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_WEATHER_CITY, CITY)
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .header("authorization", VALID_CREDENTIALS_HEADER))
+                .andDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                        PayloadDocumentation.responseFields(PayloadDocumentation.fieldWithPath("city").description(
+                                "Название города"), PayloadDocumentation.fieldWithPath("temperature").description(
+                                "Температура"), PayloadDocumentation.fieldWithPath("wind").description(
+                                "Направление ветра"))));
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("city", CoreMatchers.is(CITY)))
+                .andExpect(MockMvcResultMatchers.jsonPath("temperature", CoreMatchers.notNullValue()))
+                .andExpect(MockMvcResultMatchers.jsonPath("wind", CoreMatchers.notNullValue()));
+    }
+
+
+    @Test
+    public void getWeatherByCityBadRequest() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_WEATHER_CITY, "")
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .header("authorization", VALID_CREDENTIALS_HEADER))
+                .andDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                        PayloadDocumentation.responseFields(PayloadDocumentation.fieldWithPath("code").description(
+                                "Http code"), PayloadDocumentation.fieldWithPath("message").description(
+                                "Error message"))));
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("code", CoreMatchers.is(400)))
+                .andExpect(MockMvcResultMatchers.jsonPath("message", CoreMatchers.is("City is mandatory!")));
     }
 
     @Test
-    public void getWeatherByCityBadRequest() {
+    public void getWeatherByCityBadCredentials() throws Exception {
 
-        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
-                .get(ENDPOINT_WEATHER_CITY, "")
-                .then().assertThat()
-                .statusCode(400)
-                .body("code", Matchers.equalTo(400))
-                .body("message",Matchers.equalTo("City is mandatory!"));
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_WEATHER_CITY, CITY)
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .header("authorization", NO_VALID_CREDENTIALS_HEADER))
+                .andDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                        PayloadDocumentation.responseFields(PayloadDocumentation.fieldWithPath("code").description(
+                                "Http code"), PayloadDocumentation.fieldWithPath("message").description(
+                                "Error message"))));
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.jsonPath("code", CoreMatchers.is(401)))
+                .andExpect(MockMvcResultMatchers.jsonPath("message", CoreMatchers.is("Bad credentials")));
     }
 
     @Test
-    public void getWeatherByCoordinatesOk() {
-        Mockito.when(openWeatherMapClient.getResult(20.0, 30.0)).thenReturn(ResponseEntity.ok(getStubResult()));
+    public void getWeatherByCoordinatesOk() throws Exception {
 
-        RestAssured.given().header("authorization", VALID_CREDENTIALS_HEADER)
-                .get(ENDPOINT_WEATHER_LON_LAT, 20.0, 30.0)
-                .then().assertThat()
-                .statusCode(200)
-                .body("city", Matchers.equalTo(CITY))
-                .body("temperature", Matchers.notNullValue())
-                .body("wind", Matchers.notNullValue());
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_WEATHER_LON_LAT, 20.0,  30.0)
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .header("authorization", VALID_CREDENTIALS_HEADER))
+                .andDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                        PayloadDocumentation.responseFields(PayloadDocumentation.fieldWithPath("city").description(
+                                "Название города"), PayloadDocumentation.fieldWithPath("temperature").description(
+                                "Температура"), PayloadDocumentation.fieldWithPath("wind").description(
+                                "Направление ветра"))));
+
+        // Then
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("city", CoreMatchers.is(CITY)))
+                .andExpect(MockMvcResultMatchers.jsonPath("temperature", CoreMatchers.notNullValue()))
+                .andExpect(MockMvcResultMatchers.jsonPath("wind", CoreMatchers.notNullValue()));
     }
 
     @Test
-    public void getWeatherBadCredentials() {
-        RestAssured.given().header("authorization", NO_VALID_CREDENTIALS_HEADER)
-                .get(ENDPOINT_WEATHER_LON_LAT, 20.0, 30.0)
-                .then().assertThat()
-                .statusCode(401)
-                .body("code", Matchers.equalTo(401))
-                .body("message", Matchers.equalTo("Bad credentials"));
+    public void getWeatherByCoordinatesBadCredentials() throws Exception {
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(ENDPOINT_WEATHER_LON_LAT, 20.0, 30.0)
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .header("authorization", NO_VALID_CREDENTIALS_HEADER))
+                .andDo(MockMvcRestDocumentation.document("{method-name}",
+                        Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                        Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                        PayloadDocumentation.responseFields(PayloadDocumentation.fieldWithPath("code").description(
+                                "Http code"), PayloadDocumentation.fieldWithPath("message").description(
+                                "Error message"))));
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                .andExpect(MockMvcResultMatchers.jsonPath("code", CoreMatchers.is(401)))
+                .andExpect(MockMvcResultMatchers.jsonPath("message", CoreMatchers.is("Bad credentials")));
+    }
+    @Test
+    public void contextLoads() {
     }
 
     private Result getStubResult() {

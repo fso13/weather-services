@@ -43,7 +43,7 @@ public class WeatherController {
                     content = @Content)})
     @RequestMapping(method = RequestMethod.GET, params = {"city"})
     @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('USER')")
-    public Weather weather(@RequestParam(value = "city") String city,
+    public Weather weatherByCityName(@RequestParam(value = "city") String city,
                            @AuthenticationPrincipal Principal user) {
 
         log.debug("User: {}, get weather with params: {}", user.getName(), city);
@@ -68,7 +68,7 @@ public class WeatherController {
                     content = @Content)})
     @RequestMapping(method = RequestMethod.GET, params = {"lon", "lat"})
     @PreAuthorize("hasAuthority('ADMIN_USER') or hasAuthority('USER')")
-    public Weather weather(@RequestParam(value = "lon") double lon,
+    public Weather weatherByCoordinates(@RequestParam(value = "lon") double lon,
                            @RequestParam(value = "lat") double lat,
                            @AuthenticationPrincipal Principal user) {
 

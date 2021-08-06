@@ -17,11 +17,19 @@ public class WebConfig extends DelegatingWebMvcConfiguration {
         resolvers.add(new PrincipalMethodArgumentResolver());
     }
 
+
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry
-                .addResourceHandler("/docs/index.html")
-                .addResourceLocations("classpath:/static/docs/index.html");
+        registry.addResourceHandler("/docs/index.html").addResourceLocations("classpath:/static/docs/index.html");
+
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/3.51.1/");
+
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }

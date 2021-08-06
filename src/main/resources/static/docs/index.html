@@ -445,12 +445,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="author" class="author">LaughtingMan</span><br>
 </div>
 <div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
+<div id="toctitle">Оглавление</div>
 <ul class="sectlevel1">
 <li><a href="#overview-get-weather-by-city">Получение погоды по названию города</a>
 <ul class="sectlevel3">
-<li><a href="#_описание_ответа">Описание ответа</a></li>
 <li><a href="#_описание_параметров_запроса">Описание параметров запроса</a></li>
+<li><a href="#_описание_ответа">Описание ответа</a></li>
 <li><a href="#_пример_запроса">Пример запроса</a></li>
 <li><a href="#_пример_ответа">Пример ответа</a></li>
 <li><a href="#_curl">CURL</a></li>
@@ -459,8 +459,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#overview-get-weather-by-coordinates">Получение погоды по координатам</a>
 <ul class="sectlevel3">
-<li><a href="#_описание_ответа_2">Описание ответа</a></li>
 <li><a href="#_описание_параметров_запроса_2">Описание параметров запроса</a></li>
+<li><a href="#_описание_ответа_2">Описание ответа</a></li>
 <li><a href="#_пример_запроса_2">Пример запроса</a></li>
 <li><a href="#_пример_ответа_2">Пример ответа</a></li>
 <li><a href="#_curl_2">CURL</a></li>
@@ -474,6 +474,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="overview-get-weather-by-city"><a class="link" href="#overview-get-weather-by-city">Получение погоды по названию города</a></h2>
 <div class="sectionbody">
+<div class="sect3">
+<h4 id="_описание_параметров_запроса"><a class="link" href="#_описание_параметров_запроса">Описание параметров запроса</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Название</th>
+<th class="tableblock halign-left valign-top">Описание</th>
+<th class="tableblock halign-left valign-top">Обязательность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">city</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Название города</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_описание_ответа"><a class="link" href="#_описание_ответа">Описание ответа</a></h4>
 <table class="tableblock frame-all grid-all stretch">
@@ -504,30 +528,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">wind</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Направление ветра</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_описание_параметров_запроса"><a class="link" href="#_описание_параметров_запроса">Описание параметров запроса</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Название</th>
-<th class="tableblock halign-left valign-top">Описание</th>
-<th class="tableblock halign-left valign-top">Обязательность</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">city</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Название города</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
 </tr>
 </tbody>
 </table>
@@ -651,6 +651,35 @@ Content-Length: 51
 <h2 id="overview-get-weather-by-coordinates"><a class="link" href="#overview-get-weather-by-coordinates">Получение погоды по координатам</a></h2>
 <div class="sectionbody">
 <div class="sect3">
+<h4 id="_описание_параметров_запроса_2"><a class="link" href="#_описание_параметров_запроса_2">Описание параметров запроса</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Название</th>
+<th class="tableblock halign-left valign-top">Описание</th>
+<th class="tableblock halign-left valign-top">Обязательность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Долгота</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Широта</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
 <h4 id="_описание_ответа_2"><a class="link" href="#_описание_ответа_2">Описание ответа</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -680,35 +709,6 @@ Content-Length: 51
 <td class="tableblock halign-left valign-top"><p class="tableblock">wind</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Направление ветра</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_описание_параметров_запроса_2"><a class="link" href="#_описание_параметров_запроса_2">Описание параметров запроса</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Название</th>
-<th class="tableblock halign-left valign-top">Описание</th>
-<th class="tableblock halign-left valign-top">Обязательность</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lon</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Долгота</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">lat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Широта</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Обязательное</p></td>
 </tr>
 </tbody>
 </table>
@@ -812,7 +812,7 @@ Content-Length: 51
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-08-06 12:09:47 +0300
+Last updated 2021-08-06 12:26:28 +0300
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

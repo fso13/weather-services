@@ -6,43 +6,38 @@ LaughtingMan;
 :toc: left
 :toclevels: 4
 :sectlinks:
+:toc-title: Оглавление
 
 
 [[overview-get-weather-by-city]]
-==  Get weather by city name
-==== Sample Request
-include::{snippets}/get-weather-by-city-ok/http-request.adoc[]
-
-==== Sample Response
-include::{snippets}/get-weather-by-city-ok/http-response.adoc[]
-
-==== CURL sample
-include::{snippets}/get-weather-by-city-ok/curl-request.adoc[]
-
-==== Response Fields
+==  Получение погоды по названию города
+==== Описание параметров запроса
+include::{snippets}/get-weather-by-city-ok/request-parameters.adoc[]
+==== Описание ответа
 include::{snippets}/get-weather-by-city-ok/response-fields.adoc[]
-
-==== Error
+==== Пример запроса
+include::{snippets}/get-weather-by-city-ok/http-request.adoc[]
+==== Пример ответа
+include::{snippets}/get-weather-by-city-ok/http-response.adoc[]
+==== CURL
+include::{snippets}/get-weather-by-city-ok/curl-request.adoc[]
+==== Ошибки
 include::{snippets}/get-weather-by-city-bad-request/http-response.adoc[]
 include::{snippets}/get-weather-by-city-bad-credentials/http-response.adoc[]
-
 include::{snippets}/get-weather-by-city-bad-request/response-fields.adoc[]
 
 [[overview-get-weather-by-coordinates]]
-==  Get weather by coordinates
-==== Sample Request
-include::{snippets}/get-weather-by-coordinates-ok/http-request.adoc[]
-
-==== Sample Response
-include::{snippets}/get-weather-by-coordinates-ok/http-response.adoc[]
-
-==== CURL sample
-include::{snippets}/get-weather-by-coordinates-ok/curl-request.adoc[]
-
-==== Response Fields
+==  Получение погоды по координатам
+==== Описание параметров запроса
+include::{snippets}/get-weather-by-coordinates-ok/request-parameters.adoc[]
+==== Описание ответа
 include::{snippets}/get-weather-by-coordinates-ok/response-fields.adoc[]
-
-==== Error
+==== Пример запроса
+include::{snippets}/get-weather-by-coordinates-ok/http-request.adoc[]
+==== Пример ответа
+include::{snippets}/get-weather-by-coordinates-ok/http-response.adoc[]
+==== CURL
+include::{snippets}/get-weather-by-coordinates-ok/curl-request.adoc[]
+==== Ошибки
 include::{snippets}/get-weather-by-coordinates-bad-credentials/http-response.adoc[]
-
 include::{snippets}/get-weather-by-coordinates-bad-credentials/response-fields.adoc[]
